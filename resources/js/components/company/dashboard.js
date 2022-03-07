@@ -9,7 +9,7 @@ import { CalendarIcon, ChevronRightIcon, PlusCircleIcon } from '@heroicons/react
 
 export const CompanyDashboard = () => {
 	const [company, setCompany] = useState({accounts: []});
-	const [selected, setSelected] = useState({});
+	const [selected, setSelected] = useState(false);
 
 
 	const fetchCompany = () => {
