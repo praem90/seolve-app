@@ -13,6 +13,8 @@ class CompanyController extends Controller
             $q->select('id', 'company_id', 'account_id', 'name', 'logo');
         }])->orderBy('id', 'desc');
 
+        $companies->where('user_id', auth()->id());
+
         $companies->when(request('query'), function ($query) {
             $query->where('name', 'like', '%' . request('query') . '%');
         });
