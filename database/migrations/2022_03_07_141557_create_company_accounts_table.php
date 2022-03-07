@@ -15,6 +15,14 @@ class CreateCompanyAccountsTable extends Migration
     {
         Schema::create('company_accounts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('company_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->string('medium', 60);
+            $table->string('type', 60);
+            $table->string('name');
+            $table->string('account_id');
+            $table->string('access_token');
+            $table->string('logo');
+            $table->text('meta');
             $table->timestamps();
         });
     }

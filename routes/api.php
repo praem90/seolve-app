@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\SanctumController;
+use App\Http\Controllers\CompanyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,4 +19,6 @@ Route::post('/token', [SanctumController::class, 'token']);
 Route::post('/register', [SanctumController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('company', [CompanyController::class, 'index']);
+    Route::post('company', [CompanyController::class, 'create']);
 });
