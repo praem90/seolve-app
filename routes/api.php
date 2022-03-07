@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\SanctumController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,6 +20,13 @@ Route::post('/token', [SanctumController::class, 'token']);
 Route::post('/register', [SanctumController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('company', [CompanyController::class, 'index']);
-    Route::post('company', [CompanyController::class, 'create']);
+    Route::prefix('company')->group(function () {
+        Route::get('/', [CompanyController::class, 'index']);
+        Route::post('/', [CompanyController::class, 'create']);
+
+        Route::prefix('{company_id}/post')->group(function () {
+            Route::post('/', [PostController::class, 'post']);
+            Route::get('/', [PostController::class, 'index']);
+        });
+    });
 });

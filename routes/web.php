@@ -23,6 +23,10 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
+    Route::get('company/{id}', function () {
+        return view('company');
+    })->name('company.dashboard');
+
     require __DIR__ . '/socialite.php';
 });
 

@@ -4,13 +4,16 @@ import axios from 'axios';
 
 const AddCompany = (props) => {
 	const [name, setName] = useState('');
+	const [adding, setAdding] = useState(false);
 
 	const add = () => {
+		setAdding(true);
 		axios.post('/api/company/', {name: name})
 			.then(res => {
 				props.onAdd && props.onAdd(res.data);
 			})
-			.catch(f => alert('Company name already exists'));
+			.catch(f => alert('Company name already exists'))
+			.finally(() => setAdding(false));
 	}
 
 	return (
@@ -21,7 +24,7 @@ const AddCompany = (props) => {
     			</div>
   			</div>
 
-			<button onClick={add} type="button" className="inline-flex items-center ml-3 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+			<button onClick={add} disabled={adding} type="button" className="inline-flex items-center ml-3 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
   				Add
 			</button>
 		</div>

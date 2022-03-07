@@ -6,7 +6,7 @@ import Empty from '../empty';
 import axios from 'axios';
 import { CalendarIcon, ChevronRightIcon, PlusCircleIcon } from '@heroicons/react/solid'
 
-export const CompanyList = () => {
+export const PostList = () => {
 	const [query, setQuery] = useState('');
 	const [force, setForce] = useState(false);
 	const [companies, setCompanies] = useState([]);
@@ -30,7 +30,7 @@ export const CompanyList = () => {
 			params.set('force', force);
 		}
 
-		axios.get('/api/company', {params}).then(res => {
+		axios.get(`/api/${params.company_id}/post`, {params}).then(res => {
 			const {data, ...info} = res.data;
 			setCompanies(data);
 			info.to = info.to || 0;
@@ -90,9 +90,10 @@ export const CompanyList = () => {
 }
 
 const CompanyItem = (props) => {
+	const url = '/oauth/' + props.company.id + '/facebook/redirect';
 	return (
           <li key={props.company.id}>
-            <a href={"/company/" + props.company.id} className="block hover:bg-gray-50">
+            <div target="_blank" className="block hover:bg-gray-50">
               <div className="px-4 py-4 flex items-center sm:px-6">
                 <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
                   <div className="truncate">
@@ -120,6 +121,9 @@ const CompanyItem = (props) => {
                           alt={account.name}
                         />
                       ))}
+        			<a href={url} className="pl-2">
+        				<PlusCircleIcon className="h-6 w-6 text-gray-400" />
+        			</a>
                     </div>
                   </div>
                 </div>
@@ -127,7 +131,7 @@ const CompanyItem = (props) => {
                   <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                 </div>
               </div>
-            </a>
+            </div>
           </li>
   )
 }

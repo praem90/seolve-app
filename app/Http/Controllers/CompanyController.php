@@ -10,8 +10,12 @@ class CompanyController extends Controller
     public function index()
     {
         $companies = Company::with(['accounts' => function ($q) {
-            $q->select('id', 'account_id', 'name', 'logo');
+            $q->select('id', 'company_id', 'account_id', 'name', 'logo');
         }])->orderBy('id', 'desc');
+
+        $companies->when(request('query'), function ($query) {
+            $query->where('name', 'like', '%' . request('query') . '%');
+        });
 
         return $companies->paginate();
     }
