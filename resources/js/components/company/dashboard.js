@@ -1,11 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import AddCompany from './create';
 import AddPost from '../post/add';
-import SearchBar from '../search';
-import Pagination from '../pagination';
 import Empty from '../empty';
 import axios from 'axios';
-import { CalendarIcon, ChevronRightIcon, PlusCircleIcon } from '@heroicons/react/solid'
 
 export const CompanyDashboard = () => {
 	const [company, setCompany] = useState({accounts: []});
@@ -53,6 +49,8 @@ export const CompanyDashboard = () => {
         			<AccountItem key={account.id} account={account} company={company}/>
         		))}
       		  </ul>
+
+      			{company.accounts.length === 0 ? <Empty title="No Accounts linked. Please link an accounts to get started" /> : ''}
       		</div>
 		</div>
 	)
