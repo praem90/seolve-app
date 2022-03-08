@@ -19,7 +19,12 @@ class CompanyController extends Controller
             $query->where('name', 'like', '%' . request('query') . '%');
         });
 
-        return $companies->paginate();
+        $companies->when(request('id'), function ($query, $id) {
+            $id = is_array($id) ? $id : [$id];
+            $query->whereIn('id', $id);
+        });
+
+        return $companies->paginate(request('limit', 15));
     }
 
     public function create(Request $request)
@@ -33,5 +38,12 @@ class CompanyController extends Controller
         ]));
 
         return $company;
+    }
+
+    public function find($id)
+    {
+        return Company::with(['accounts' => function ($q) {
+            $q->select('id', 'company_id', 'account_id', 'name', 'logo');
+        }])->findOrFail($id);
     }
 }

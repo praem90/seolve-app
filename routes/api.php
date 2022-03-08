@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('company')->group(function () {
         Route::get('/', [CompanyController::class, 'index']);
         Route::post('/', [CompanyController::class, 'create']);
+        Route::get('{id}', [CompanyController::class, 'find']);
 
         Route::prefix('{company_id}/post')->group(function () {
             Route::post('/', [PostController::class, 'post']);

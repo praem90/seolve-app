@@ -9,18 +9,14 @@ export const CompanyDashboard = () => {
 
 
 	const fetchCompany = () => {
-		const params = new URLSearchParams();
-
 		const route_params = location.pathname.split('/');
 
 		if (route_params.length < 2 ) {
 			return;
 		}
 
-		params['id[]'] = route_params[1];
-
-		axios.get('/api/company', {params}).then(res => {
-			setCompany(res.data.data[0]);
+		axios.get('/api/company/'+route_params.pop()).then(res => {
+			setCompany(res.data);
 		});
 	}
 
