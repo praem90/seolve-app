@@ -36,4 +36,21 @@ return [
         'redirect' => 'https://seolve.test/oauth/facebook/callback',
     ],
 
+    'twitter' => [
+        'consumer_key' => env('TWITTER_API_KEY'),
+        'consumer_secret' => env('TWITTER_API_SECRET'),
+        'client_id' => env('TWITTER_CLIENT_ID'),
+        'client_secret' => env('TWITTER_CLIENT_SECRET'),
+        'access_token' => env('TWITTER_ACCESS_TOKEN'),
+        'access_token_secret' => env('TWITTER_ACCESS_TOKEN_SECRET'),
+        'redirect' => 'https://9eee-27-111-75-209.ngrok.io/callback',
+    ],
+
+    'instagram' => [
+        'client_id' => env('INSTAGRAM_CLIENT_ID'),
+        'client_secret' => env('INSTAGRAM_CLIENT_SECRET'),
+        'redirect' => env('INSTAGRAM_REDIRECT_URI')
+    ],
+
+
 ];

@@ -17,6 +17,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('twitter', \App\Http\Controllers\Twitter\TwitterAuthorizeController::class);
+Route::get('callback', \App\Http\Controllers\Twitter\TwitterCallbackController::class);
+
+Route::get('instagram', [\App\Http\Controllers\Instagram\InstagramAuthController::class, 'redirectToProvider']);
+Route::get('instagram/callback', [\App\Http\Controllers\Instagram\InstagramAuthController::class, 'callback']);
+
 Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', function () {
