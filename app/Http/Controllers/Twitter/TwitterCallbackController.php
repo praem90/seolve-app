@@ -53,6 +53,6 @@ class TwitterCallbackController extends Controller
         $account->meta = $profile;
         $account->save();
 
-        return redirect('/company/'. $companyId);
+        return redirect('/company/' . $companyId);
     }
 }

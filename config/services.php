@@ -43,13 +43,19 @@ return [
         'client_secret' => env('TWITTER_CLIENT_SECRET'),
         'access_token' => env('TWITTER_ACCESS_TOKEN'),
         'access_token_secret' => env('TWITTER_ACCESS_TOKEN_SECRET'),
-        'redirect' => 'https://cff4-2402-3a80-1827-d92a-8dbb-c516-8fa4-3e3b.ngrok.io/oauth/twitter/callback',
+        'redirect' => 'https://seolve.test/oauth/twitter/callback',
     ],
 
     'instagram' => [
         'client_id' => env('INSTAGRAM_CLIENT_ID'),
         'client_secret' => env('INSTAGRAM_CLIENT_SECRET'),
         'redirect' => env('INSTAGRAM_REDIRECT_URI')
+    ],
+
+    'linkedin' => [
+        'client_id' => env('LINKEDIN_CLIENT_ID', '86hmxzz7gux7oq'),
+        'client_secret' => env('LINKEDIN_CLIENT_SECRET', 'e6LNtZyIoUoYOlAH'),
+        'redirect' => 'https://seolve.test/oauth/linkedin/callback',
     ],
 
 

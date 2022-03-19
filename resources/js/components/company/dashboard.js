@@ -28,12 +28,16 @@ export const CompanyDashboard = () => {
         		{company.name}
             </h2>
         	<div className="flex flex-row">
-				<a href={"/oauth/" + company.id + '/facebook/redirect'} className="inline-flex items-center ml-3 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+				<a href={"/oauth/" + company.id + '/facebook/redirect'} className="inline-flex items-center ml-3 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
   					<img className="h-6 w-6" src={"/images/icons/facebook.png"} alt="Facebook" />
 				</a>
 
-                <a href={"/oauth/" + company.id + '/twitter/redirect'} className="inline-flex items-center ml-3 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <a href={"/oauth/" + company.id + '/twitter/redirect'} className="inline-flex items-center ml-3 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <img className="h-6 w-6" src={"/images/icons/twitter.png"} alt="Facebook" />
+                </a>
+
+                <a href={"/oauth/" + company.id + '/linkedin/redirect'} title="LinkedIn" className="inline-flex items-center ml-3 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <img className="h-6 w-6" src={"/images/icons/linkedin.png"} alt="LinkedIn" />
                 </a>
 
 				<button

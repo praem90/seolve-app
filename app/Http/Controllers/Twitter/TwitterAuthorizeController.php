@@ -6,6 +6,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Laravel\Socialite\Facades\Socialite;
 
 class TwitterAuthorizeController extends Controller
 {
