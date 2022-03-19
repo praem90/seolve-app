@@ -3,6 +3,7 @@
 use App\Models\CompanyAccount;
 use Illuminate\Support\Facades\Http;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('oauth')->group(function () {
     Route::get('{company_id}/{driver}/redirect', function ($company_id, $driver) {
@@ -59,4 +60,9 @@ Route::prefix('oauth')->group(function () {
         return redirect()->route('dashboard');
     })->where(['driver' => 'facebook'])
         ->name('socialite.callback');
+
+    Route::get('{company_id}/twitter/redirect',\App\Http\Controllers\Twitter\TwitterAuthorizeController::class)->name('twitter.redirect');
+    Route::get('twitter/callback', \App\Http\Controllers\Twitter\TwitterCallbackController::class)->name('twitter.callback')->withoutMiddleware('auth');
+
+
 });

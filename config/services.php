@@ -43,7 +43,7 @@ return [
         'client_secret' => env('TWITTER_CLIENT_SECRET'),
         'access_token' => env('TWITTER_ACCESS_TOKEN'),
         'access_token_secret' => env('TWITTER_ACCESS_TOKEN_SECRET'),
-        'redirect' => 'https://9eee-27-111-75-209.ngrok.io/callback',
+        'redirect' => 'https://cff4-2402-3a80-1827-d92a-8dbb-c516-8fa4-3e3b.ngrok.io/oauth/twitter/callback',
     ],
 
     'instagram' => [

@@ -19,6 +19,7 @@ class CompanyAccount extends Model
 
     public $hidden = [
         'access_token',
+        'access_token_secret',
         'meta'
     ];
 }

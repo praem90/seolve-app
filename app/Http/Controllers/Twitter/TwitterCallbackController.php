@@ -4,12 +4,19 @@ namespace App\Http\Controllers\Twitter;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Http\Controllers\Controller;
+use App\Models\Company;
+use App\Models\CompanyAccount;
 use Illuminate\Http\Request;
 
 class TwitterCallbackController extends Controller
 {
     public function __invoke(Request $request)
     {
+        $companyId = cache('oauth.1');
+        $company = Company::whereId($companyId)->exists();
+
+        abort_unless($companyId && $company, 404);
+
         $twitter = new TwitterOAuth(
             config('services.twitter.consumer_key'),
             config('services.twitter.consumer_secret'),
@@ -21,26 +28,31 @@ class TwitterCallbackController extends Controller
             'oauth_verifier' => $request->get('oauth_verifier')
         ]);
 
-        //Todo::store $accessToken['oauth_token'], $accessToken['oauth_token_secret']
+        $user = new TwitterOAuth(
+            config('services.twitter.consumer_key'),
+            config('services.twitter.consumer_secret'),
+            $accessToken['oauth_token'],
+            $accessToken['oauth_token_secret']
+        );
 
-        return redirect('/');
+        $profile = $user->get('account/verify_credentials');
 
-//        $post = new TwitterOAuth(
-//            config('services.twitter.consumer_key'),
-//            config('services.twitter.consumer_secret'),
-//            $accessToken['oauth_token'],
-//            $accessToken['oauth_token_secret']
-//        );
-//
-//        $post->setTimeouts(10, 15);
-//
-//        $post->upload('media/upload', ['media' => '@' . base_path() . '/public/images/icons/facebook.png']);
-//        $post->post('statuses/update', [
-//            'status' => 'Hello Seolve! sdzc'
-//        ]);
-//
-//        //$post->get('users/search', ['q' => 'Gangai_Amaran', 'count' => 10]);
-//
-//        dd($post);
+        $account = CompanyAccount::firstOrNew([
+            'account_id' => $profile->id,
+            'company_id' => $companyId,
+        ]);
+
+        $account->company_id = $companyId;
+        $account->medium = 'twitter';
+        $account->name = $profile->name;
+        $account->account_id = $profile->id;
+        $account->access_token = $accessToken['oauth_token'];
+        $account->access_token_secret = $accessToken['oauth_token_secret'];
+        $account->logo = $profile->profile_image_url;
+        $account->type = 'user';
+        $account->meta = $profile;
+        $account->save();
+
+        return redirect('/company/'. $companyId);
     }
 }
