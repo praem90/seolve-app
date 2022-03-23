@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Libraries\SocialMedia;
+namespace App\Http\Libraries\SocialMedia\Contracts;
 
 interface SocialMediaInterface
 {

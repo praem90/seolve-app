@@ -9,30 +9,50 @@ use App\Http\Libraries\SocialMedia\Drivers\Twitter;
 use Illuminate\Container\Container;
 use Illuminate\Support\Manager;
 
-class SocialMediaManager
+class SocialMediaManager extends Manager
 {
-    public function getDefaultDriver()
+    public function with($driver)
     {
-        abort(404);
+        return $this->driver($driver);
     }
 
-    public function getTwitterDriver(): Twitter
+    public function createTwitterDriver(): Twitter
     {
         return new Twitter();
     }
 
-    public function getFacebookDriver(): Facebook
+    public function createFacebookDriver(): Facebook
     {
         return new Facebook();
     }
 
-    public function getInstagramDriver(): Instagram
+    public function createInstagramDriver(): Instagram
     {
         return new Instagram();
     }
 
-    public function getLinkedInDriver(): LinkedIn
+    public function createLinkedInDriver(): LinkedIn
     {
         return new LinkedIn();
+    }
+
+    public function forgetDrivers()
+    {
+        $this->drivers = [];
+
+        return $this;
+    }
+
+    public function setContainer($container)
+    {
+        $this->app = $container;
+        $this->container = $container;
+
+        return $this;
+    }
+
+    public function getDefaultDriver()
+    {
+        throw new \InvalidArgumentException('No Socialite driver was specified.');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Libraries\SocialMedia\Drivers;
 
-use App\Http\Libraries\SocialMedia\SocialMediaInterface;
+use App\Http\Libraries\SocialMedia\Contracts\SocialMediaInterface;
 
 class Facebook implements SocialMediaInterface
 {

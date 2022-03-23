@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return (new \App\Http\Libraries\SocialMedia\SocialMediaManager())->driver('twitter')->redirect();
+    return \App\Http\Libraries\SocialMedia\Facade\SocialMedia::driver('twitter')->redirect();
 });
 
 Route::get('twitter', \App\Http\Controllers\Twitter\TwitterAuthorizeController::class);

@@ -2,13 +2,14 @@
 
 namespace App\Http\Libraries\SocialMedia\Drivers;
 
-use App\Http\Libraries\SocialMedia\SocialMediaInterface;
+use App\Http\Libraries\SocialMedia\Contracts\SocialMediaInterface;
+use Laravel\Socialite\Facades\Socialite;
 
 class Twitter implements SocialMediaInterface
 {
     public function redirect()
     {
-        return ':)';
+        return Socialite::driver('twitter')->redirect();
     }
 
     public function callback()
