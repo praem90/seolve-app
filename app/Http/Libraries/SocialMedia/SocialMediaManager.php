@@ -36,23 +36,8 @@ class SocialMediaManager extends Manager
         return new LinkedIn();
     }
 
-    public function forgetDrivers()
-    {
-        $this->drivers = [];
-
-        return $this;
-    }
-
-    public function setContainer($container)
-    {
-        $this->app = $container;
-        $this->container = $container;
-
-        return $this;
-    }
-
     public function getDefaultDriver()
     {
-        throw new \InvalidArgumentException('No Socialite driver was specified.');
+        throw new \InvalidArgumentException('No driver was specified.');
     }
 }
