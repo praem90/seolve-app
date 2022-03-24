@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Http\Libraries\SocialMedia\Facade\SocialMedia;
 use App\Models\CompanyAccount;
 use App\Models\Post;
 use Illuminate\Bus\Queueable;
@@ -12,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 
-class PublishPostFacebookJob implements ShouldQueue
+class PublishPostJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -37,22 +38,10 @@ class PublishPostFacebookJob implements ShouldQueue
      */
     public function handle()
     {
-        foreach ($this->post->accounts as $account_id) {
-            $account = CompanyAccount::find($account_id);
+		$this->post->load('postAccounts.account');
 
-            $data = [
-                'message' => $this->post->message,
-                'access_token' => $account->access_token,
-            ];
-
-            if (app()->environment('local')) {
-                $data['published'] = 'false';
-            }
-
-            $response = Http::post('https://graph.facebook.com/' . $account->account_id . '/feed', $data);
-
-            $this->post->response = $response->json();
-            $this->post->save();
+        foreach ($this->post->postAccounts as $postAccount) {
+			SocialMedia::driver($postAccount->account->medium)->post($this->post, $postAccount);
         }
     }
 }

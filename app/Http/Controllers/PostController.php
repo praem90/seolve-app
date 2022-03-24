@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\PublishPostFacebookJob;
+use App\Jobs\PublishPostJob;
 use App\Models\Post;
+use App\Models\PostAccount;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -44,7 +45,16 @@ class PostController extends Controller
         // TODO: attachements
         $post->save();
 
-        $job = PublishPostFacebookJob::dispatch($post);
+		$postAccounts = [];
+		foreach ($validated['accounts'] as $account_id) {
+			$postAccounts[] = new PostAccount([
+				'company_account_id' => $account_id
+			]);
+		}
+
+		$post->postAccounts()->saveMany($postAccounts);
+
+        $job = PublishPostJob::dispatch($post);
 
         if ($post->scheduled_at) {
             $job->delay($post->scheduled_at);

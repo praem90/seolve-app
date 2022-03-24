@@ -49,6 +49,10 @@ class PostAccount extends Model
 		return $this->belongsTo(CompanyAccount::class);
 	}
 
+	public function account() {
+		return $this->companyAccount();
+	}
+
 	public function post(): BelongsTo
 	{
 		return $this->belongsTo(Post::class);

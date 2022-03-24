@@ -29,4 +29,14 @@ class Post extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+	public function accounts()
+	{
+		return $this->hasManyThrough(CompanyAccount::class, PostAccount::class, 'post_id', 'account_id', 'id', 'company_account_id');
+	}
+
+	public function postAccounts()
+	{
+		return $this->hasMany(PostAccount::class);
+	}
 }

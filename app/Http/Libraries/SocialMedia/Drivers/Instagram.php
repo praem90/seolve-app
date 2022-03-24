@@ -3,6 +3,7 @@
 namespace App\Http\Libraries\SocialMedia\Drivers;
 
 use App\Http\Libraries\SocialMedia\Contracts\SocialMediaInterface;
+use App\Models\Company;
 
 class Instagram implements SocialMediaInterface
 {
@@ -11,12 +12,12 @@ class Instagram implements SocialMediaInterface
         // TODO: Implement redirect() method.
     }
 
-    public function callback()
+    public function callback(Company $company)
     {
         // TODO: Implement callback() method.
     }
 
-    public function post()
+    public function post(Post $post, PostAccount $postAccount)
     {
         // TODO: Implement post() method.
     }

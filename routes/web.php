@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\CompanyAccount;
+use App\Models\Post;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,7 +16,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return \App\Http\Libraries\SocialMedia\Facade\SocialMedia::driver('twitter')->redirect();
+	$post = Post::find(22);
+
+    $dats = \App\Http\Libraries\SocialMedia\Facade\SocialMedia::driver('linkedin')->post($post, $post->postAccounts->first());
+	dd($dats->meta);
+	$page = CompanyAccount::where('medium', 'facebook')->first();
+	$page = [
+		'id' => $page['account_id'],
+		'access_token' => $page['access_token']
+	];
+    return \App\Http\Libraries\SocialMedia\Facade\SocialMedia::driver('facebook')->exchangeToken($page['access_token']);
 });
 
 Route::get('twitter', \App\Http\Controllers\Twitter\TwitterAuthorizeController::class);
