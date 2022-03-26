@@ -12,11 +12,17 @@ use Laravel\Socialite\Facades\Socialite;
 
 class Facebook implements SocialMediaInterface
 {
-	const DRIVER = 'facebook';
+	public const DRIVER = 'facebook';
+
+	protected $scopes = [
+		'pages_manage_posts',
+		'publish_video',
+	];
+
     public function redirect()
     {
         $driver =  Socialite::driver(self::DRIVER);
-        $driver->scopes(['pages_manage_posts']);
+        $driver->scopes($this->scopes);
 
         return $driver->redirect();
     }
@@ -107,17 +113,52 @@ class Facebook implements SocialMediaInterface
 
         if (app()->environment('local')) {
             $data['published'] = 'false';
+            $data['debug'] = 'all';
         }
+
+		$medias = $this->uploadAsset($post, $postAccount);
+
+		if ($medias) {
+			$data['attached_media'] = array_map(function ($id) {
+				return ['media_fbid' => $id];
+			}, $medias);
+		}
 
         $response = Http::post('https://graph.facebook.com/' . $postAccount->account->account_id . '/feed', $data);
 
 		$postAccount->meta = $response->json();
 
+		if ($response->successful()) {
+			$postAccount->social_media_post_id = $response->json('id');
+		}
+
 		$postAccount->save();
     }
 
-    public function uploadAsset()
+    public function uploadAsset(Post $post, PostAccount $postAccount)
     {
-        // TODO: Implement uploadAsset() method.
+         $data = [
+            'access_token' => $postAccount->account->access_token,
+        ];
+
+        $data['published'] = 'false';
+
+		$media_ids = [];
+		foreach ($post->assets as $asset) {
+			$client = Http::asMultipart()->attach('source', fopen($asset->getStoragePath(), 'r'));
+
+			$response = $client->post(
+				'https://graph.facebook.com/' . $postAccount->account->account_id . ($asset->isPhoto() ? '/photos' : '/videos'),
+			    $data
+			);
+
+			if ($response->successful()) {
+				$media_ids[] = $response->json('id');
+			}
+
+			logger($response->json());
+		}
+
+		return $media_ids;
     }
 }

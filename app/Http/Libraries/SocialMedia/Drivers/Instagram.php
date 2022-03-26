@@ -22,7 +22,7 @@ class Instagram implements SocialMediaInterface
         // TODO: Implement post() method.
     }
 
-    public function uploadAsset()
+    public function uploadAsset(Post $post, PostAccount $postAccount)
     {
         // TODO: Implement uploadAsset() method.
     }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class PostAsset
@@ -43,5 +44,35 @@ class PostAsset extends Model
 	public function postAccountAssets(): HasMany
 	{
 		return $this->hasMany(PostAccountAsset::class);
+	}
+
+	public function isPhoto()
+	{
+		$imageMimeTypes = [
+			'image/png',
+			'image/jpg',
+			'image/jpeg',
+			'image/gif',
+		];
+
+		return in_array($this->mime_type, $imageMimeTypes);
+	}
+
+	public function isVideo()
+	{
+		$videoMimeTypes = [
+			'image/mp4',
+			'image/mpeg',
+			'image/mpeg4',
+			'image/avi',
+			'image/ogg',
+		];
+
+		return in_array($this->mime_type, $videoMimeTypes);
+	}
+
+	public function getStoragePath()
+	{
+		return Storage::path($this->path);
 	}
 }

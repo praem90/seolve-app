@@ -8,6 +8,7 @@ use App\Models\CompanyAccount;
 use App\Models\Post;
 use App\Models\PostAccount;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
 
 class Twitter implements SocialMediaInterface
@@ -54,6 +55,12 @@ class Twitter implements SocialMediaInterface
             'text' => $post->message,
         ];
 
+		$medias = $this->uploadAsset($post, $postAccount);
+
+		if ($medias) {
+			$data['media']['media_ids'] = $medias;
+		}
+
         $headers = [
             'Authorization' => 'Bearer ' . $postAccount->account->access_token,
         ];
@@ -65,8 +72,23 @@ class Twitter implements SocialMediaInterface
 		$postAccount->save();
     }
 
-    public function uploadAsset()
-    {
-        // TODO: Implement uploadAsset() method.
-    }
+	public function uploadAsset(Post $post, PostAccount $postAccount)
+	{
+        $headers = [
+            'Authorization' => 'Bearer ' . $postAccount->account->access_token,
+        ];
+
+		$media_ids = [];
+		foreach ($post->assets as $asset) {
+			$client = Http::asMultipart()->attach('media', fopen(Storage::path($asset->path), 'r'), $asset->alt?: 'Alt Image');
+
+			$response = $client->withHeaders($headers)->post('https://upload.twitter.com/1.1/media/upload.json');
+
+			if ($response->successful()) {
+				$media_ids[] = $response->json('media_id');
+			}
+		}
+
+		return $media_ids;
+	}
 }

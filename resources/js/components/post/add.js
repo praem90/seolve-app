@@ -56,8 +56,8 @@ export function AddForm(props) {
         frmData.append('company_id', props.company.id);
         frmData.append('message', post.message);
         // frmData.append('scheduled_at', post.scheduled_at);
-        // frmData.append('attachements', post.new_image);
 
+        post.new_image && Array.from(post.new_image).forEach(image => frmData.append('attachements[]', image));
         accounts.forEach(account_id => frmData.append('accounts[]', account_id));
 
         setAddingPost(true);

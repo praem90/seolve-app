@@ -39,4 +39,9 @@ class Post extends Model
 	{
 		return $this->hasMany(PostAccount::class);
 	}
+
+	public function assets()
+	{
+		return $this->hasMany(PostAsset::class);
+	}
 }

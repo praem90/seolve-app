@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Jobs\PublishPostJob;
 use App\Models\Post;
 use App\Models\PostAccount;
+use App\Models\PostAsset;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 
 class PostController extends Controller
 {
@@ -28,6 +30,7 @@ class PostController extends Controller
             'accounts.*' => ['required', 'integer'],
             'message' => ['required'],
             'attachements' => ['array'],
+            'attachements.*' => ['mimes:jpg,bmp,png,mp4'],
             'scheduled_at' => ['date'],
         ]);
 
@@ -42,8 +45,20 @@ class PostController extends Controller
             $post->scheduled_at = $validated['scheduled_at'];
         }
 
-        // TODO: attachements
         $post->save();
+
+		$postAssets = [];
+        if ($request->has('attachements')) {
+			foreach ($request->file('attachements') as $file) {
+				$path = $file->store('assets/' . $post->id . '/');
+				$postAssets[] = new PostAsset([
+					'path' => $path,
+					'mime_type' => $file->getClientMimeType()
+				]);
+			}
+		}
+
+		$post->assets()->saveMany($postAssets);
 
 		$postAccounts = [];
 		foreach ($validated['accounts'] as $account_id) {
@@ -53,6 +68,8 @@ class PostController extends Controller
 		}
 
 		$post->postAccounts()->saveMany($postAccounts);
+
+		// TODO: post account assets
 
         $job = PublishPostJob::dispatch($post);
 

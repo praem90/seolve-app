@@ -14,5 +14,5 @@ interface SocialMediaInterface
 
     public function post(Post $post, PostAccount $postAccount);
 
-    public function uploadAsset();
+    public function uploadAsset(Post $post, PostAccount $postAccount);
 }

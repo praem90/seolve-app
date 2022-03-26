@@ -8,6 +8,7 @@ use App\Models\CompanyAccount;
 use App\Models\Post;
 use App\Models\PostAccount;
 use ArrayObject;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -67,6 +68,20 @@ class LinkedIn implements SocialMediaInterface
 		if (app()->environment('production') === false) {
 		}
 
+		$assets = $this->uploadAsset($post, $postAccount);
+
+		var_dump($assets);
+
+		if (count($assets)) {
+			$data['contentEntities'] = [];
+
+			foreach ($assets as $asset) {
+				$data['contentEntities'][] = [
+					'entity' => $asset,
+				];
+			}
+		}
+
         $headers = [
             'Authorization' => 'Bearer ' . $postAccount->account->access_token,
 			'Content-Type' => 'application/json'
@@ -81,8 +96,70 @@ class LinkedIn implements SocialMediaInterface
 		return $postAccount;
     }
 
-    public function uploadAsset()
+    public function uploadAsset(Post $post, PostAccount $postAccount)
     {
-        // TODO: Implement uploadAsset() method.
+		$media_ids = [];
+
+		foreach ($post->assets as $asset) {
+			$registerUpload = $this->registerUpload($postAccount, $asset->isPhoto() ? 'image' : 'video');
+			if ($registerUpload === false) {
+				continue;
+			}
+
+			$uploadUrl = Arr::get(
+				$registerUpload,
+				'value.uploadMechanism.com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest.uploadUrl'
+			);
+			$assetUrn = Arr::get($registerUpload, 'value.uploadMechanism.asset');
+
+			$client = Http::asMultipart()->attach('upload-file', fopen($asset->getStoragePath(), 'r'));
+			$response = $client->post($uploadUrl);
+
+			if ($response->successful()) {
+				$media_ids[] = $assetUrn;
+			}
+		}
+
+		return $media_ids;
     }
+
+	public function registerUpload(PostAccount $postAccount, $type)
+	{
+		$params = [
+			'registerUploadRequest' => [
+				'owner' => 'urn:li:person:'.$postAccount->account->account_id,
+				'recipes' => [
+ 					'urn:li:digitalmediaRecipe:feedshare-video'
+				],
+				'serviceRelationships' => [
+					'identifier' => 'urn:li:userGeneratedContent',
+					'relationshipType' => 'OWNER',
+				],
+			],
+		];
+
+
+		if ($type === 'image') {
+			$params['registerUploadRequest']['recipes'] = [
+				'urn:li:digitalmediaRecipe:feedshare-image'
+			];
+
+			$params['registerUploadRequest']['supportedUploadMechanism'] = [
+				'SYNCHRONOUS_UPLOAD'
+			];
+		}
+
+        $headers = [
+            'Authorization' => 'Bearer ' . $postAccount->account->access_token,
+			'Content-Type' => 'application/json'
+        ];
+
+        $response = Http::withHeaders($headers)->post('https://api.linkedin.com/v2/assets?action=registerUpload', $params);
+
+		if ($response->successful()) {
+			return $response->json();
+		}
+
+		return false;
+	}
 }
