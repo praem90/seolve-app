@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/token', [SanctumController::class, 'token']);
 Route::post('/register', [SanctumController::class, 'register']);
 
-//Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::prefix('company')->group(function () {
         Route::get('/', [CompanyController::class, 'index']);
         Route::post('/', [CompanyController::class, 'create']);
@@ -30,7 +30,7 @@ Route::post('/register', [SanctumController::class, 'register']);
             Route::get('/', [PostController::class, 'index']);
         });
     });
-//});
+});
 
 Route::prefix('twitter')->name('twitter.')->group(function () {
     Route::get('redirect', \App\Http\Controllers\Twitter\TwitterAuthorizeController::class)->name('redirect');
