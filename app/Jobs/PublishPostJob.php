@@ -38,10 +38,10 @@ class PublishPostJob implements ShouldQueue
      */
     public function handle()
     {
-		$this->post->load('postAccounts.account');
+        $this->post->load('postAccounts.account');
 
         foreach ($this->post->postAccounts as $postAccount) {
-			SocialMedia::driver($postAccount->account->medium)->post($this->post, $postAccount);
+            SocialMedia::driver($postAccount->account->medium)->post($this->post, $postAccount);
         }
     }
 }

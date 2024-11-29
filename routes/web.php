@@ -17,17 +17,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-	$post = Post::latest()->first();
-
-	SocialMedia::driver('linkedin')->post($post, $post->postAccounts()->first());
-
-	dd($post);
+    return redirect('dashboard');
 });
 
 Route::get('twitter', \App\Http\Controllers\Twitter\TwitterAuthorizeController::class);
 Route::get('callback', \App\Http\Controllers\Twitter\TwitterCallbackController::class);
 
-Route::get('instagram', [\App\Http\Controllers\Instagram\InstagramAuthController::class, 'redirectToProvider']);
+Route::get('instagram', [\App\Http\Controllers\Instagram\InstagramAuthController::class, 'redirect']);
 Route::get('instagram/callback', [\App\Http\Controllers\Instagram\InstagramAuthController::class, 'callback']);
 
 Route::middleware('auth')->group(function () {

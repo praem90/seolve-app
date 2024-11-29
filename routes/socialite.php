@@ -11,7 +11,7 @@ Route::prefix('oauth')->group(function () {
         session()->flash('company_id', $company_id);
         $driver =  SocialMedia::driver($driver);
         return $driver->redirect();
-    })->where(['driver' => 'facebook|linkedin|twitter'])
+    })->where(['driver' => 'facebook|linkedin|twitter|linkedinOpenid'])
         ->name('socialite.redirect');
 
     Route::get('{driver}/callback', function ($driver) {
@@ -21,10 +21,10 @@ Route::prefix('oauth')->group(function () {
 
         $driver =  SocialMedia::driver($driver);
 
-		$driver->callback($company);
+        $driver->callback($company);
 
         return redirect()->route('dashboard');
-    })->where(['driver' => 'facebook|linkedin|twitter'])
+    })->where(['driver' => 'facebook|linkedin|twitter|linkedinOpenid'])
         ->name('socialite.callback');
 
     /* Route::get('{company_id}/twitter/redirect', \App\Http\Controllers\Twitter\TwitterAuthorizeController::class)->name('twitter.redirect');

@@ -33,13 +33,13 @@ return [
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-        'redirect' => 'https://seolve.test/oauth/facebook/callback',
+        'redirect' => 'http://localhost:8000/oauth/facebook/callback',
     ],
 
     'twitter' => [
         'client_id' => env('TWITTER_CLIENT_ID'),
         'client_secret' => env('TWITTER_CLIENT_SECRET'),
-        'redirect' => 'https://seolve.test/oauth/twitter/callback',
+        'redirect' => 'https://localhost:8000/oauth/twitter/callback',
     ],
 
     'instagram' => [
@@ -49,9 +49,15 @@ return [
     ],
 
     'linkedin' => [
-        'client_id' => env('LINKEDIN_CLIENT_ID', '86hmxzz7gux7oq'),
-        'client_secret' => env('LINKEDIN_CLIENT_SECRET', 'e6LNtZyIoUoYOlAH'),
-        'redirect' => 'https://seolve.test/oauth/linkedin/callback',
+        'client_id' => env('LINKEDIN_CLIENT_ID'),
+        'client_secret' => env('LINKEDIN_CLIENT_SECRET'),
+        'redirect' => 'http://localhost:8000/oauth/linkedin/callback',
+    ],
+
+    'linkedin-openid' => [
+        'client_id' => env('LINKEDIN_CLIENT_ID'),
+        'client_secret' => env('LINKEDIN_CLIENT_SECRET'),
+        'redirect' => 'http://localhost:8000/oauth/linkedin/callback',
     ],
 
 

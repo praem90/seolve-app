@@ -12,12 +12,15 @@ use Laravel\Socialite\Facades\Socialite;
 
 class Facebook implements SocialMediaInterface
 {
-	public const DRIVER = 'facebook';
+    public const DRIVER = 'facebook';
 
-	protected $scopes = [
-		'pages_manage_posts',
-		'publish_video',
-	];
+    protected $scopes = [
+        'pages_manage_posts',
+        'publish_video',
+        'instagram_basic',
+        'instagram_content_publish',
+        'pages_show_list'
+    ];
 
     public function redirect()
     {
@@ -60,8 +63,8 @@ class Facebook implements SocialMediaInterface
         $company->accounts()->saveMany($accounts);
     }
 
-	public function exchangeToken($token)
-	{
+    public function exchangeToken($token)
+    {
         $url = 'https://graph.facebook.com/oauth/access_token';
 
         $response = Http::get($url, [
@@ -71,38 +74,38 @@ class Facebook implements SocialMediaInterface
             'fb_exchange_token' => $token,
         ]);
 
-		if ($response->successful()) {
-        	return $response->json('access_token');
-		}
+        if ($response->successful()) {
+            return $response->json('access_token');
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function getPages($access_token)
-	{
+    public function getPages($access_token)
+    {
         $url = 'https://graph.facebook.com/me/accounts';
         $response = Http::get($url, ['access_token' => $access_token]);
 
-		if ($response->successful()) {
-        	return $response->json('data');
-		}
+        if ($response->successful()) {
+            return $response->json('data');
+        }
 
-		return [];
-	}
+        return [];
+    }
 
-	public function getProfilePicture($page)
-	{
+    public function getProfilePicture($page)
+    {
         $url = 'https://graph.facebook.com/' . $page['id'] . '/picture';
         $response = Http::get($url, ['access_token' => $page['access_token'], 'redirect' => 0]);
 
-		if ($response->successful()) {
-        	$info = $response->json('data');
+        if ($response->successful()) {
+            $info = $response->json('data');
 
-			return $info['url'];
-		}
+            return $info['url'];
+        }
 
-		return false;
-	}
+        return false;
+    }
 
     public function post(Post $post, PostAccount $postAccount)
     {
@@ -112,53 +115,53 @@ class Facebook implements SocialMediaInterface
         ];
 
         if (app()->environment('local')) {
-            $data['published'] = 'false';
+            $data['published'] = 'true';
             $data['debug'] = 'all';
         }
 
-		$medias = $this->uploadAsset($post, $postAccount);
+        $medias = $this->uploadAsset($post, $postAccount);
 
-		if ($medias) {
-			$data['attached_media'] = array_map(function ($id) {
-				return ['media_fbid' => $id];
-			}, $medias);
-		}
+        if ($medias) {
+            $data['attached_media'] = array_map(function ($id) {
+                return ['media_fbid' => $id];
+            }, $medias);
+        }
 
-        $response = Http::post('https://graph.facebook.com/' . $postAccount->account->account_id . '/feed', $data);
+        $response = Http::post('https://graph.facebook.com/v21.0/' . $postAccount->account->account_id . '/feed', $data);
 
-		$postAccount->meta = $response->json();
+        $postAccount->meta = $response->json();
 
-		if ($response->successful()) {
-			$postAccount->social_media_post_id = $response->json('id');
-		}
+        if ($response->successful()) {
+            $postAccount->social_media_post_id = $response->json('id');
+        }
 
-		$postAccount->save();
+        $postAccount->save();
     }
 
     public function uploadAsset(Post $post, PostAccount $postAccount)
     {
          $data = [
             'access_token' => $postAccount->account->access_token,
-        ];
+         ];
 
-        $data['published'] = 'false';
+         $data['published'] = 'false';
 
-		$media_ids = [];
-		foreach ($post->assets as $asset) {
-			$client = Http::asMultipart()->attach('source', fopen($asset->getStoragePath(), 'r'));
+         $media_ids = [];
+         foreach ($post->assets as $asset) {
+             $client = Http::asMultipart()->attach('source', fopen($asset->getStoragePath(), 'r'));
 
-			$response = $client->post(
-				'https://graph.facebook.com/' . $postAccount->account->account_id . ($asset->isPhoto() ? '/photos' : '/videos'),
-			    $data
-			);
+             $response = $client->post(
+                 'https://graph.facebook.com/' . $postAccount->account->account_id . ($asset->isPhoto() ? '/photos' : '/videos'),
+                 $data
+             );
 
-			if ($response->successful()) {
-				$media_ids[] = $response->json('id');
-			}
+             if ($response->successful()) {
+                 $media_ids[] = $response->json('id');
+             }
 
-			logger($response->json());
-		}
+             logger($response->json());
+         }
 
-		return $media_ids;
+         return $media_ids;
     }
 }
