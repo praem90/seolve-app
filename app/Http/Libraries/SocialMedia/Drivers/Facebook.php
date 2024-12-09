@@ -36,13 +36,24 @@ class Facebook implements SocialMediaInterface
 
         $access_token = $this->exchangeToken($user->token);
 
-        $url = 'https://graph.facebook.com/me/accounts';
-        $response = Http::get($url, ['access_token' => $access_token]);
-
-        $pages = $response->json('data');
-
         $accounts = [];
 
+        $account = CompanyAccount::firstOrNew([
+            'account_id' => $user['id'],
+            'company_id' => $company->id,
+        ]);
+
+        $account->medium = self::DRIVER;
+        $account->name = $user['name'];
+        $account->account_id = $user['id'];
+        $account->access_token = $user->token;
+        $account->logo = $this->getProfilePicture($user->getId(), $user->token) ?? url('images/icons/facebook.png');
+        $account->type = 'person';
+        $account->meta = $user;
+
+        $accounts[] = $account;
+
+        $pages = $this->getPages($access_token);
         foreach ($pages as $page) {
             $account = CompanyAccount::firstOrNew([
                 'account_id' => $page['id'],
@@ -53,7 +64,7 @@ class Facebook implements SocialMediaInterface
             $account->name = $page['name'];
             $account->account_id = $page['id'];
             $account->access_token = $page['access_token'];
-            $account->logo = $this->getProfilePicture($page) ?? url('images/icons/facebook.png');
+            $account->logo = $this->getProfilePicture($page['id'], $page['access_token']) ?? url('images/icons/facebook.png');
             $account->type = 'page';
             $account->meta = $page;
 
@@ -93,10 +104,10 @@ class Facebook implements SocialMediaInterface
         return [];
     }
 
-    public function getProfilePicture($page)
+    public function getProfilePicture($id, $access_token)
     {
-        $url = 'https://graph.facebook.com/' . $page['id'] . '/picture';
-        $response = Http::get($url, ['access_token' => $page['access_token'], 'redirect' => 0]);
+        $url = 'https://graph.facebook.com/' . $id . '/picture';
+        $response = Http::get($url, ['access_token' => $access_token, 'redirect' => 0]);
 
         if ($response->successful()) {
             $info = $response->json('data');
@@ -158,8 +169,6 @@ class Facebook implements SocialMediaInterface
              if ($response->successful()) {
                  $media_ids[] = $response->json('id');
              }
-
-             logger($response->json());
          }
 
          return $media_ids;

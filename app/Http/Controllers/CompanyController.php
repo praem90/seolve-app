@@ -10,7 +10,7 @@ class CompanyController extends Controller
     public function index()
     {
         $companies = Company::with(['accounts' => function ($q) {
-            $q->select('id', 'company_id', 'account_id', 'name', 'logo');
+            $q->select('id', 'medium', 'company_id', 'account_id', 'name', 'logo');
         }])->orderBy('id', 'desc');
 
         $companies->where('user_id', auth()->id());
@@ -43,7 +43,7 @@ class CompanyController extends Controller
     public function find($id)
     {
         return Company::with(['accounts' => function ($q) {
-            $q->select('id', 'company_id', 'account_id', 'name', 'logo');
+            $q->select('id', 'medium', 'company_id', 'account_id', 'name', 'logo');
         }])->findOrFail($id);
     }
 }
