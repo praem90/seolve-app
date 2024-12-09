@@ -21,7 +21,7 @@ class CreateCompanyAccountsTable extends Migration
             $table->string('name');
             $table->string('account_id');
             $table->text('access_token');
-            $table->string('logo');
+            $table->text('logo');
             $table->text('meta');
             $table->timestamps();
         });

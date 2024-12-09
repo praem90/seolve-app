@@ -63,7 +63,10 @@ export const CompanyDashboard = () => {
 const AccountItem = (props) => {
 	return (
         <li key={props.account.id} className="py-4 flex items-center">
+        <div className="relative">
           <img className="h-10 w-10 rounded-full ml-4" src={props.account.logo} alt="" />
+            <img className="h-3 w-3 absolute bottom-0 right-0" src={"/images/icons/"+props.account.medium+".png"} alt="Facebook" />
+        </div>
           <div className="ml-3">
             <p className="text-sm font-medium text-gray-900">{props.account.name}</p>
             <p className="text-sm text-gray-500"><time dateTime={props.account.created_at}>{props.account.created_at_display}</time></p>
